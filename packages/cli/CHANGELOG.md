@@ -1,5 +1,13 @@
 # vercel
 
+## 50.13.3
+
+### Patch Changes
+
+- Add `integration add <integration>/<product>` slash syntax to skip product selection prompt, and dynamic help listing available products for multi-product integrations ([#14898](https://github.com/vercel/vercel/pull/14898))
+
+- Surface hidden marketplace CLI commands (`balance` and `create-threshold`) in `--help` output ([#14844](https://github.com/vercel/vercel/pull/14844))
+
 ## 50.13.2
 
 ### Patch Changes
