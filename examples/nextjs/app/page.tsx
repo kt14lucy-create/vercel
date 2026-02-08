@@ -1,65 +1,119 @@
-import Image from "next/image";
 
-export default function Home() {
+'use client'
+import { useState } from "react";
+
+export default function MikeysMovieTheaterSupplies() {
+  const [view, setView] = useState("home");
+  const [cart, setCart] = useState<string[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [logoClicks, setLogoClicks] = useState(0);
+
+  const orderNumber = Math.floor(100000 + Math.random() * 900000);
+  const timestamp = new Date().toLocaleString();
+
+  const inventory = {
+    popcorn: 128,
+    drinks: 256,
+    candy: 512,
+    gummies: 342,
+    pretzels: 221,
+  };
+
+  const addToCart = (item: string) => setCart((prev) => [...prev, item]);
+
+  const handleLogoClick = () => {
+    const clicks = logoClicks + 1;
+    setLogoClicks(clicks);
+    if (clicks >= 5) {
+      setView("secret");
+      setLogoClicks(0);
+    }
+  };
+
+  const products = [
+    { name: "Fresh Butter Popcorn 🍿", stock: inventory.popcorn },
+    { name: "Fizzy Fountain Drinks 🥤", stock: inventory.drinks },
+    { name: "Chocolate Candy Bars 🍫", stock: inventory.candy },
+    { name: "Gummy Snacks 🍬", stock: inventory.gummies },
+    { name: "Salty Pretzels 🧂", stock: inventory.pretzels },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={{fontFamily:'Arial, sans-serif', padding:20}}>
+      <div style={{position:'fixed', right:20, top:20, border:'1px solid #ccc', padding:10, width:220}}>
+        <h3>🛒 Cart</h3>
+        {cart.length === 0 ? <p>Empty</p> :
+          <ul>{cart.map((c,i)=><li key={i}>{c}</li>)}</ul>}
+        <button onClick={()=>setView('checkout')}>Checkout</button>
+      </div>
+
+      <div style={{textAlign:'center'}} onClick={handleLogoClick}>
+        <div style={{fontSize:50}}>🍿🎞️</div>
+        <h1>Mikey's Movie Theater Supplies</h1>
+        <p>System Time: {timestamp}</p>
+        <p>🎟️ For Theater Owners Only</p>
+      </div>
+
+      <nav style={{textAlign:'center', margin:20}}>
+        {["home","products","reviews","orderform","tracker","login","contact"].map(v=>
+          <button key={v} onClick={()=>setView(v)} style={{margin:5}}>{v}</button>
+        )}
+      </nav>
+
+      {view==="home" && <p style={{textAlign:'center'}}>Welcome, Theater Owner!</p>}
+
+      {view==="products" &&
+        <div>
+          {products.map(p=>
+            <div key={p.name} style={{margin:10, border:'1px solid #ddd', padding:10}}>
+              {p.name} — In stock: {p.stock}
+              <button onClick={()=>addToCart(p.name)} style={{marginLeft:10}}>Order Now</button>
+            </div>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      }
+
+      {view==="checkout" &&
+        <div style={{textAlign:'center'}}>
+          <h2>Order #{orderNumber}</h2>
+          <button onClick={()=>alert("Invisible truck dispatched!")}>Place Order</button>
         </div>
-      </main>
+      }
+
+      {view==="reviews" && <p>⭐⭐⭐⭐⭐ Best pretend supplier ever!</p>}
+
+      {view==="orderform" &&
+        <div>
+          <p>Order Form #{orderNumber}</p>
+          <button onClick={()=>window.print()}>Print</button>
+        </div>
+      }
+
+      {view==="tracker" &&
+        <p>🚚 Truck crossing Candy Cane Bridge. Arrival in 7 pretend minutes.</p>
+      }
+
+      {view==="login" &&
+        <div>
+          {!loggedIn ?
+            <button onClick={()=>setLoggedIn(true)}>Login as Snack Manager</button>
+            :
+            <p>✅ Logged in. Popcorn inventory: {inventory.popcorn}</p>
+          }
+        </div>
+      }
+
+      {view==="contact" &&
+        <p>📞 555‑MikeyMovie</p>
+      }
+
+      {view==="secret" &&
+        <div style={{textAlign:'center', marginTop:40}}>
+          <h2>🎉 SECRET OWNER PANEL 🎉</h2>
+          <button onClick={()=>setView('home')}>Return</button>
+        </div>
+      }
     </div>
   );
 }
+
